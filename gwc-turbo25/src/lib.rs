@@ -11,11 +11,13 @@ turbo::init! {
         started: bool,
         event_frequency: u32,
         study_event_active: bool,
+        score: u32,
     } = Self {
         frame: 0,
         started: false,
         event_frequency: 50,
         study_event_active: false,
+        score: 0,
     }
 }
 
@@ -61,7 +63,8 @@ turbo::go!{
         }
         if state.study_event_active == true && gamepad(0).up.pressed() {
             state.study_event_active = false;
-            
+            state.score += 1;
+            print!("{}", state.score);
         }
 
 
