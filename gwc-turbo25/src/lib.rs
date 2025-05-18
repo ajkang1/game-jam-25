@@ -4,6 +4,21 @@ use turbo::prelude::*;
 turbo::config!{
     display.resolution = [512,256]
 }
+
+turbo::init! {
+    struct GameState {
+        frame: u32,
+        started: bool,
+        event_frequency: u32,
+        study_event_active: bool,
+    } = Self {
+        frame: 0,
+        started: false,
+        event_frequency: 50,
+        study_event_active: false,
+    }
+}
+
 turbo::go!{
     let mut state = GameState::load();
     if !state.started {
@@ -53,19 +68,5 @@ turbo::go!{
     }
     state.frame += 1;
     state.save();
-}
-
-turbo::init! {
-    struct GameState {
-        frame: u32,
-        started: bool,
-        event_frequency: u32,
-        study_event_active: bool,
-    } = Self {
-        frame: 0,
-        started: false,
-        event_frequency: 50,
-        study_event_active: false,
-    }
 }
 
