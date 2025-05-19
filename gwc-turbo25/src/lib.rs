@@ -138,6 +138,14 @@ turbo::go!{
         x = 1,
         y = 1,
     );
+    // create red rectangle for the health bar with location (0,0) and width of the current wealth and height as 10
+        rect!(
+            x = 0,
+            y = 0,
+            w = 100,
+            h = 10,
+            color = 0x0000ffff,
+        );
     //crate::println!("{:?} {}", {}, state.eat_event_time_left/state.eat_event_timer);
     if !state.started {
         
@@ -159,14 +167,7 @@ turbo::go!{
 
     }
     else {
-        // create red rectangle for the health bar with location (0,0) and width of the current wealth and height as 10
-        rect!(
-            x = 100,
-            y = 50,
-            w = state.health as f32,
-            h = 10,
-            color = 0xff000000,
-        );
+        
         // game runstate
         sprite!("student_study_sprite",
             x = 60,
