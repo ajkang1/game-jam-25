@@ -837,6 +837,10 @@ turbo::go!{
 
         }
 
+        if (state.eat_event_active == true && gamepad(0).up.pressed()) || (true) {
+
+        }
+
     }
 
 
