@@ -32,15 +32,15 @@ turbo::init! {
 
         eat_event_active: false,
         eat_event_start_time:0.0,
-        eat_event_timer: 3.0,
+        eat_event_timer: 0.5, // time player is given to press the button
         eat_event_time_left: 0.0,
         eat_fail_anim_playing: false,
         eat_fail_start_time: 0.0,
-        eat_fail_anim_timer: 2.0,
+        eat_fail_anim_timer: 1.0, // time it takes to play the eat failure animation
         eat_fail_anim_time_left: 0.0,
         eat_success_anim_playing: false,
         eat_success_start_time: 0.0,
-        eat_success_anim_timer: 2.0,
+        eat_success_anim_timer: 1.0, // time it takes to play the eat success animation
         eat_success_anim_time_left: 0.0,
 
     }
@@ -100,8 +100,8 @@ turbo::go!{
 
             circ!(
                 d = 28.0 + (state.eat_event_time_left/state.eat_event_timer) * 40.0,
-                x = 25.5 + (state.eat_event_timer - state.eat_event_time_left) * 7.0,
-                y = -6.0 + (state.eat_event_timer - state.eat_event_time_left) * 7.0,
+                x = 60.0 - (28.0 + (state.eat_event_time_left/state.eat_event_timer) * 40.0) / 2.0,
+                y = 29.0 - (28.0 + (state.eat_event_time_left/state.eat_event_timer) * 40.0) / 2.0,
                 
                 color = (0xadd8e6 & 0xffffff00) | alpha,
             );
@@ -160,8 +160,8 @@ turbo::go!{
             if ((state.eat_success_anim_timer - state.eat_success_anim_time_left)/state.eat_success_anim_timer) * 180.0 < 60.0 {
                 circ!(
                     d = (((state.eat_success_anim_timer - state.eat_success_anim_time_left)/state.eat_success_anim_timer) * 180.0).clamp(0.0, 60.0),
-                    x = 58.0 - (state.eat_success_anim_timer - state.eat_success_anim_time_left) * 40.0,
-                    y = 24.0 - (state.eat_success_anim_timer - state.eat_success_anim_time_left) * 34.0,
+                    x = 60.0 - ((((state.eat_success_anim_timer - state.eat_success_anim_time_left)/state.eat_success_anim_timer) * 180.0).clamp(0.0, 60.0)) / 2.0,
+                    y = 29.0 - ((((state.eat_success_anim_timer - state.eat_success_anim_time_left)/state.eat_success_anim_timer) * 180.0).clamp(0.0, 60.0)) / 2.0,
                     
                     color = (0x1bff0000 & 0xffffff00) | circalpha,
                 );
@@ -170,7 +170,7 @@ turbo::go!{
                 circ!(
                     d = 60.0,
                     x = 30.0,
-                    y = 0.0,
+                    y = -1.0,
                     
                     color = (0x1bff0000 & 0xffffff00) | circalpha,
                 );
@@ -215,8 +215,8 @@ turbo::go!{
             if ((state.eat_fail_anim_timer - state.eat_fail_anim_time_left)/state.eat_fail_anim_timer) * 180.0 < 60.0 {
                 circ!(
                     d = (((state.eat_fail_anim_timer - state.eat_fail_anim_time_left)/state.eat_fail_anim_timer) * 180.0).clamp(0.0, 60.0),
-                    x = 58.0 - (state.eat_fail_anim_timer - state.eat_fail_anim_time_left) * 40.0,
-                    y = 24.0 - (state.eat_fail_anim_timer - state.eat_fail_anim_time_left) * 34.0,
+                    x = 60.0 - ((((state.eat_fail_anim_timer - state.eat_fail_anim_time_left)/state.eat_fail_anim_timer) * 180.0).clamp(0.0, 60.0)) / 2.0,
+                    y = 29.0 - ((((state.eat_fail_anim_timer - state.eat_fail_anim_time_left)/state.eat_fail_anim_timer) * 180.0).clamp(0.0, 60.0)) / 2.0,
                     
                     color = (0xff000000 & 0xffffff00) | circalpha,
                 );
@@ -225,7 +225,7 @@ turbo::go!{
                 circ!(
                     d = 60.0,
                     x = 30.0,
-                    y = 0.0,
+                    y = -1.0,
                     
                     color = (0xff000000 & 0xffffff00) | circalpha,
                 );
