@@ -9,6 +9,8 @@ turbo::init! {
     struct GameState {
         frame: u32,
         time_elapsed: f64,
+        game_start_time: f64,
+        game_timer: f64,
         started: bool,
         event_frequency: u32,
 
@@ -20,6 +22,11 @@ turbo::init! {
         is_game_over: bool,
         is_played: bool, // <-- damage sound check
         is_played_point: bool, // <-- point sound check
+
+        eat_enabled: bool,
+        sleep_enabled: bool,
+        water_enabled: bool,
+        grass_enabled: bool,
 
         eat_event_active: bool,
         eat_event_start_time: f64,
@@ -75,6 +82,8 @@ turbo::init! {
     } = Self {
         frame: 0,
         time_elapsed: 0.0,
+        game_start_time: 0.0,
+        game_timer: 0.0,
         started: false,
         event_frequency: 150,
 
@@ -87,9 +96,14 @@ turbo::init! {
         is_played: false,
         is_played_point: false,
 
+        eat_enabled: false,
+        sleep_enabled: false,
+        water_enabled: false,
+        grass_enabled: false,
+
         eat_event_active: false,
         eat_event_start_time:0.0,
-        eat_event_timer: 0.5, // time player is given to press the button
+        eat_event_timer: 3.0, // time player is given to press the button
         eat_event_time_left: 0.0,
         eat_fail_anim_playing: false,
         eat_fail_start_time: 0.0,
@@ -115,7 +129,7 @@ turbo::init! {
 
         water_event_active: false,
         water_event_start_time:0.0,
-        water_event_timer: 3.5, // time player is given to press the button
+        water_event_timer: 3.0, // time player is given to press the button
         water_event_time_left: 0.0,
         water_fail_anim_playing: false,
         water_fail_start_time: 0.0,
@@ -128,7 +142,7 @@ turbo::init! {
 
         grass_event_active: false,
         grass_event_start_time:0.0,
-        grass_event_timer: 3.5, // time player is given to press the button
+        grass_event_timer: 3.0, // time player is given to press the button
         grass_event_time_left: 0.0,
         grass_fail_anim_playing: false,
         grass_fail_start_time: 0.0,
@@ -177,6 +191,7 @@ turbo::go!{
             state.started = true;
             state.health = 100.0;
             state.score = 0;
+            state.game_start_time = state.time_elapsed;
             audio::play("earn_point");
         }
         if !state.is_game_over{
@@ -219,6 +234,79 @@ turbo::go!{
 
     }
     else {
+        if state.game_timer > 60.0 {
+            state.grass_event_timer = 0.5;
+            state.water_event_timer = 0.5;
+            state.eat_event_timer = 0.5;
+            state.sleep_event_timer = 0.5;
+            state.event_frequency = 75;
+            state.eat_enabled = true;
+            state.sleep_enabled = true;
+            state.water_enabled = true;
+            state.grass_enabled = true;
+        }
+        else if state.game_timer > 45.0 {
+            state.grass_event_timer = 1.0;
+            state.water_event_timer = 1.0;
+            state.eat_event_timer = 1.0;
+            state.sleep_event_timer = 1.0;
+            state.event_frequency = 150;
+            state.eat_enabled = true;
+            state.sleep_enabled = true;
+            state.water_enabled = true;
+            state.grass_enabled = true;
+        }
+        else if state.game_timer > 30.0 {
+            state.grass_event_timer = 2.0;
+            state.water_event_timer = 2.0;
+            state.eat_event_timer = 2.0;
+            state.sleep_event_timer = 2.0;
+            state.event_frequency = 175;
+            state.eat_enabled = true;
+            state.sleep_enabled = true;
+            state.water_enabled = true;
+            state.grass_enabled = true;
+        }
+        else if state.game_timer > 15.0 {
+            state.grass_event_timer = 3.0;
+            state.water_event_timer = 3.0;
+            state.eat_event_timer = 3.0;
+            state.sleep_event_timer = 3.0;
+            state.event_frequency = 175;
+            state.eat_enabled = true;
+            state.sleep_enabled = true;
+            state.water_enabled = true;
+            state.grass_enabled = false;
+        }
+        else if state.game_timer > 10.0 {
+            state.grass_event_timer = 2.0;
+            state.water_event_timer = 2.0;
+            state.eat_event_timer = 2.0;
+            state.sleep_event_timer = 2.0;
+            state.event_frequency = 175;
+            state.eat_enabled = true;
+            state.sleep_enabled = true;
+            state.water_enabled = false;
+            state.grass_enabled = false;
+        }
+        else if state.game_timer > 2.5 {
+            state.grass_event_timer = 2.0;
+            state.water_event_timer = 2.0;
+            state.eat_event_timer = 2.0;
+            state.sleep_event_timer = 2.0;
+            state.event_frequency = 150;
+            state.eat_enabled = true;
+            state.sleep_enabled = false;
+            state.water_enabled = false;
+            state.grass_enabled = false;
+        }
+        else {
+            state.eat_enabled = false;
+            state.sleep_enabled = false;
+            state.water_enabled = false;
+            state.grass_enabled = false;
+        }
+
         //health check
         if state.health <= 0.0 {
             state.started = false;
@@ -244,8 +332,9 @@ turbo::go!{
         
         let spawn_event_val = rand() % event_frequency;
 
+
         // EAT EVENT
-        if spawn_event_val == 1 && state.eat_event_active == false && state.eat_fail_anim_playing == false && state.eat_success_anim_playing == false {
+        if state.eat_enabled && spawn_event_val == 1 && state.eat_event_active == false && state.eat_fail_anim_playing == false && state.eat_success_anim_playing == false {
             log!("eat event active");
             state.eat_event_active = true;
             state.eat_event_start_time = state.time_elapsed;
@@ -421,7 +510,7 @@ turbo::go!{
         }
 
         // SLEEP EVENT
-        if spawn_event_val == 2 && state.sleep_event_active == false && state.sleep_fail_anim_playing == false && state.sleep_success_anim_playing == false {
+        if state.sleep_enabled && spawn_event_val == 2 && state.sleep_event_active == false && state.sleep_fail_anim_playing == false && state.sleep_success_anim_playing == false {
             log!("sleep event active");
             state.sleep_event_active = true;
             state.sleep_event_start_time = state.time_elapsed;
@@ -593,7 +682,7 @@ turbo::go!{
         }
 
         // WATER EVENT
-        if spawn_event_val == 3 && state.water_event_active == false && state.water_fail_anim_playing == false && state.water_success_anim_playing == false {
+        if state.water_enabled && spawn_event_val == 3 && state.water_event_active == false && state.water_fail_anim_playing == false && state.water_success_anim_playing == false {
             log!("water event active");
             state.water_event_active = true;
             state.water_event_start_time = state.time_elapsed;
@@ -769,7 +858,7 @@ turbo::go!{
         }
 
         // GRASS EVENT
-        if spawn_event_val == 4 && state.grass_event_active == false && state.grass_fail_anim_playing == false && state.grass_success_anim_playing == false {
+        if state.grass_enabled && spawn_event_val == 4 && state.grass_event_active == false && state.grass_fail_anim_playing == false && state.grass_success_anim_playing == false {
             log!("grass event active");
             state.grass_event_active = true;
             state.grass_event_start_time = state.time_elapsed;
@@ -962,6 +1051,7 @@ turbo::go!{
 
     state.frame += 1;
     state.time_elapsed = state.frame as f64 / 60.0;
+    state.game_timer = state.time_elapsed - state.game_start_time;
     state.save();
 }
 
