@@ -14,6 +14,12 @@ turbo::init! {
 
         score: u32,
         health: f32,
+        misinput_debounce: bool,
+        debounce_start_time: f64,
+        is_hit: bool,
+        is_game_over: bool,
+        is_played: bool, // <-- damage sound check
+        is_played_point: bool, // <-- point sound check
 
         eat_event_active: bool,
         eat_event_start_time: f64,
@@ -74,6 +80,12 @@ turbo::init! {
 
         score: 0,
         health: 100.0,
+        misinput_debounce: false,
+        debounce_start_time: 0.0,
+        is_hit: false,
+        is_game_over: false,
+        is_played: false,
+        is_played_point: false,
 
         eat_event_active: false,
         eat_event_start_time:0.0,
@@ -131,6 +143,12 @@ turbo::init! {
 
 turbo::go!{
     let mut state = GameState::load();
+
+    //music
+    if !audio::is_playing("lofi") {
+        audio::play("lofi");
+    }
+
     sprite!("study-room",x = -25, y = 0, scale = 0.57);
     //score
     let score_string = format!("Score: {}", state.score);
@@ -159,30 +177,69 @@ turbo::go!{
             state.started = true;
             state.health = 100.0;
             state.score = 0;
+            audio::play("earn_point");
         }
-        text_box!(
-            "Start Game",
-            font = "medium",
-            scale = 1.4,
-            width = 70,
-            height = 20,
-            align = "center",
-            x = 95,
-            y = 64,
-        );
+        if !state.is_game_over{
+            text_box!(
+                "Start Game",
+                font = "SuperPixel",
+                width = 70,
+                height = 50,
+                align = "center",
+                x = 90,
+                y = 54,
+            );
+            text!(
+                "Take care of yourself to avoid crashing out!",
+                font = "medium",
+                x = 17,
+                y = 40,
+            )
+        }
+        else {
+            sprite!("student_gameover_sprite",
+                x = 60,
+                y = 0
+            );
+
+            text_box!("Crashed out!",
+                font = "SuperPixel",
+                width = 100,
+                height = 50,
+                align = "center",
+                x = 80,
+                y = 100,
+            );
+            text!("Click to play again",
+                font = "medium",
+                x = 80,
+                y = 15,
+            );
+        }
 
     }
     else {
         //health check
         if state.health <= 0.0 {
             state.started = false;
+            state.is_game_over = true;
+            audio::play("game_over");
         }
 
         // game runstate
-        sprite!("student_study_sprite",
-            x = 60,
-            y = 0
-        );
+        if !(state.eat_fail_anim_playing || state.water_fail_anim_playing || state.sleep_fail_anim_playing || state.grass_fail_anim_playing || state.misinput_debounce) {
+            sprite!("student_study_sprite",
+                x = 60,
+                y = 0,
+            );
+        }
+        else {
+            sprite!("student_hit_sprite",
+                x = 60,
+                y = 0,
+            );
+        }
+
         let event_frequency = state.event_frequency;
         
         let spawn_event_val = rand() % event_frequency;
@@ -245,6 +302,10 @@ turbo::go!{
         }
         // spawn the green circle and fade-out when you get a success
         if state.eat_success_anim_playing == true {
+            if !state.is_played_point {
+                audio::play("earn_point");
+                state.is_played_point = true;
+            }
             state.eat_success_anim_time_left = (state.eat_success_start_time + state.eat_success_anim_timer) - state.time_elapsed;
 
             // fade-out icons
@@ -294,12 +355,17 @@ turbo::go!{
             }
             else {
                 state.eat_success_anim_playing = false;
+                state.is_played_point = false;
             }
 
         }
 
         // spawn the red circle and fade-out when you get a failure
         if state.eat_fail_anim_playing == true {
+            if !state.is_played {
+                audio::play("take_damage");
+                state.is_played = true;
+            }
             state.eat_fail_anim_time_left = (state.eat_fail_start_time + state.eat_fail_anim_timer) - state.time_elapsed;
             
             // fade-out icons
@@ -349,6 +415,7 @@ turbo::go!{
             }
             else {
                 state.eat_fail_anim_playing = false;
+                state.is_played = false;
             }
 
         }
@@ -407,6 +474,10 @@ turbo::go!{
         }
         // spawn the green circle and fade-out when you get a success
         if state.sleep_success_anim_playing == true {
+            if !state.is_played_point {
+                audio::play("earn_point");
+                state.is_played_point = true;
+            }
             state.sleep_success_anim_time_left = (state.sleep_success_start_time + state.sleep_success_anim_timer) - state.time_elapsed;
 
             // fade-out icons
@@ -456,12 +527,17 @@ turbo::go!{
             }
             else {
                 state.sleep_success_anim_playing = false;
+                state.is_played_point = false;
             }
 
         }
 
         // spawn the red circle and fade-out when you get a failure
         if state.sleep_fail_anim_playing == true {
+            if !state.is_played {
+                audio::play("take_damage");
+                state.is_played = true;
+            }
             state.sleep_fail_anim_time_left = (state.sleep_fail_start_time + state.sleep_fail_anim_timer) - state.time_elapsed;
             
             // fade-out icons
@@ -511,6 +587,7 @@ turbo::go!{
             }
             else {
                 state.sleep_fail_anim_playing = false;
+                state.is_played = false;
             }
 
         }
@@ -573,6 +650,10 @@ turbo::go!{
         }
         // spawn the green circle and fade-out when you get a success
         if state.water_success_anim_playing == true {
+            if !state.is_played_point {
+                audio::play("earn_point");
+                state.is_played_point = true;
+            }
             state.water_success_anim_time_left = (state.water_success_start_time + state.water_success_anim_timer) - state.time_elapsed;
 
             // fade-out icons
@@ -622,12 +703,17 @@ turbo::go!{
             }
             else {
                 state.water_success_anim_playing = false;
+                state.is_played_point = false;
             }
 
         }
 
         // spawn the red circle and fade-out when you get a failure
         if state.water_fail_anim_playing == true {
+            if !state.is_played {
+                audio::play("take_damage");
+                state.is_played = true;
+            }
             state.water_fail_anim_time_left = (state.water_fail_start_time + state.water_fail_anim_timer) - state.time_elapsed;
             
             // fade-out icons
@@ -677,6 +763,7 @@ turbo::go!{
             }
             else {
                 state.water_fail_anim_playing = false;
+                state.is_played = false;
             }
 
         }
@@ -739,6 +826,10 @@ turbo::go!{
         }
         // spawn the green circle and fade-out when you get a success
         if state.grass_success_anim_playing == true {
+            if !state.is_played_point {
+                audio::play("earn_point");
+                state.is_played_point = true;
+            }
             state.grass_success_anim_time_left = (state.grass_success_start_time + state.grass_success_anim_timer) - state.time_elapsed;
 
             // fade-out icons
@@ -788,12 +879,17 @@ turbo::go!{
             }
             else {
                 state.grass_success_anim_playing = false;
+                state.is_played_point = false;
             }
 
         }
 
         // spawn the red circle and fade-out when you get a failure
         if state.grass_fail_anim_playing == true {
+            if !state.is_played {
+                audio::play("take_damage");
+                state.is_played = true;
+            }
             state.grass_fail_anim_time_left = (state.grass_fail_start_time + state.grass_fail_anim_timer) - state.time_elapsed;
             
             // fade-out icons
@@ -843,6 +939,7 @@ turbo::go!{
             }
             else {
                 state.grass_fail_anim_playing = false;
+                state.is_played = false;
             }
 
         }
@@ -853,6 +950,15 @@ turbo::go!{
 
     }
 
+    if (state.misinput_debounce == false) && (((state.eat_event_active == false && gamepad(0).up.pressed()) && (state.eat_fail_anim_playing == false && gamepad(0).up.pressed()) && (state.eat_success_anim_playing == false && gamepad(0).up.pressed())) || ((state.sleep_event_active == false && gamepad(0).down.pressed()) && (state.sleep_fail_anim_playing == false && gamepad(0).down.pressed()) && (state.sleep_success_anim_playing == false && gamepad(0).down.pressed())) || ((state.water_event_active == false && gamepad(0).left.pressed()) && (state.water_fail_anim_playing == false && gamepad(0).left.pressed()) && (state.water_success_anim_playing == false && gamepad(0).left.pressed())) || ((state.grass_event_active == false && gamepad(0).right.pressed()) && (state.grass_fail_anim_playing == false && gamepad(0).right.pressed()) && (state.grass_success_anim_playing == false && gamepad(0).right.pressed()))){
+            state.health -= 5.0;
+            state.misinput_debounce = true;
+            state.debounce_start_time = state.time_elapsed;
+            audio::play("take_damage");
+        }
+        if state.time_elapsed - state.debounce_start_time > 0.5 {
+            state.misinput_debounce = false;
+        }
 
     state.frame += 1;
     state.time_elapsed = state.frame as f64 / 60.0;
