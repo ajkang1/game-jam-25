@@ -737,7 +737,7 @@ turbo::go!{
                 let circtransparency = 1.0 - (0.15 * ((state.time_elapsed - state.grass_success_start_time)/state.grass_success_anim_time_left)).clamp(0.0,1.0);
                 let circalpha = (circtransparency * 255.0).round() as u32;
                 sprite!("button_touch_grass",
-                x = 172.0,
+                x = 180.0,
                 y = 90,
                 scale = 0.3,
                 color = 0xffffff00 | (alpha).clamp(0, 255),
@@ -747,7 +747,7 @@ turbo::go!{
                 y = 83,
                 color = 0xffffff00 | (alpha).clamp(0, 255),
             );
-            text!("A",
+            text!("D",
                 x = 196.0,
                 y = 125,
                 font = "large",
@@ -802,7 +802,7 @@ turbo::go!{
                 y = 83,
                 color = 0xffffff00 | (alpha).clamp(0, 255),
             );
-            text!("A",
+            text!("D",
                 x = 196.0,
                 y = 125,
                 font = "large",
