@@ -184,7 +184,13 @@ turbo::go!{
         );
     //crate::println!("{:?} {}", {}, state.eat_event_time_left/state.eat_event_timer);
     if !state.started {
-        
+        if audio::is_playing("boss_fight") {
+            audio::stop("boss_fight");
+        }
+        if !audio::is_playing("lofi") {
+            audio::play("lofi");
+        }
+       
         let pointer = pointer();
         let clicked = pointer.just_pressed();
         if clicked {
@@ -235,6 +241,12 @@ turbo::go!{
     }
     else {
         if state.game_timer > 60.0 {
+            if audio::is_playing("lofi") {
+                audio::stop("lofi");
+            }
+            if !audio::is_playing("boss_fight") {
+                audio::play("boss_fight");
+            }
             state.grass_event_timer = 0.5;
             state.water_event_timer = 0.5;
             state.eat_event_timer = 0.5;
