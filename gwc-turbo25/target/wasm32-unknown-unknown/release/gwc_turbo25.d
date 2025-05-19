@@ -1,1 +1,1 @@
-C:\Users\quesa\Desktop/game-jam-25/gwc-turbo25/target\wasm32-unknown-unknown\release\gwc_turbo25.wasm: C:\Users\quesa\Desktop\game-jam-25\gwc-turbo25\src\lib.rs
+C:\Users\ajkan\Desktop\game-jam-25\gwc-turbo25/target\wasm32-unknown-unknown\release\gwc_turbo25.wasm: C:\Users\ajkan\Desktop\game-jam-25\gwc-turbo25\src\lib.rs

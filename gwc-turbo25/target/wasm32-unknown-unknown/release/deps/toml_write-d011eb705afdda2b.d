@@ -1,0 +1,11 @@
+C:\Users\ajkan\Desktop\game-jam-25\gwc-turbo25/target\wasm32-unknown-unknown\release\deps\libtoml_write-d011eb705afdda2b.rmeta: C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\lib.rs C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\key.rs C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\string.rs C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\value.rs C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\write.rs
+
+C:\Users\ajkan\Desktop\game-jam-25\gwc-turbo25/target\wasm32-unknown-unknown\release\deps\libtoml_write-d011eb705afdda2b.rlib: C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\lib.rs C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\key.rs C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\string.rs C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\value.rs C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\write.rs
+
+C:\Users\ajkan\Desktop\game-jam-25\gwc-turbo25/target\wasm32-unknown-unknown\release\deps\toml_write-d011eb705afdda2b.d: C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\lib.rs C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\key.rs C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\string.rs C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\value.rs C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\write.rs
+
+C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\lib.rs:
+C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\key.rs:
+C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\string.rs:
+C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\value.rs:
+C:\Users\ajkan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\toml_write-0.1.1\src\write.rs:

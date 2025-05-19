@@ -136,15 +136,19 @@ turbo::go!{
     let score_string = format!("Score: {}", state.score);
     text!(&score_string,
         x = 1,
-        y = 1,
+        y = 10,
     );
     // create red rectangle for the health bar with location (0,0) and width of the current wealth and height as 10
-        rect!(
-            x = 0,
+        text!("Health: ",
+            x = 1,
             y = 0,
-            w = 100,
+        );
+        rect!(
+            x = 40,
+            y = 0,
+            w = state.health,
             h = 10,
-            color = 0x0000ffff,
+            color = 0xff0000ff,
         );
     //crate::println!("{:?} {}", {}, state.eat_event_time_left/state.eat_event_timer);
     if !state.started {
@@ -153,6 +157,8 @@ turbo::go!{
         let clicked = pointer.just_pressed();
         if clicked {
             state.started = true;
+            state.health = 100.0;
+            state.score = 0;
         }
         text_box!(
             "Start Game",
@@ -167,7 +173,11 @@ turbo::go!{
 
     }
     else {
-        
+        //health check
+        if state.health <= 0.0 {
+            state.started = false;
+        }
+
         // game runstate
         sprite!("student_study_sprite",
             x = 60,
